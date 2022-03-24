@@ -1,3 +1,9 @@
+# golang configs
+go.sum
+
+# intellij configs
+.idea/*
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
@@ -13,3 +19,6 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# Program overrides
+override.json
