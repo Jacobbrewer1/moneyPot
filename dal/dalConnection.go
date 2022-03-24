@@ -11,7 +11,9 @@ import (
 	"time"
 )
 
-var db *sql.DB
+var (
+	db *sql.DB
+)
 
 func DbSetup() {
 	go loopCon(db)
@@ -33,6 +35,7 @@ func connect() *sql.DB {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	dbTemp.SetConnMaxLifetime(time.Minute * 3)
 	if err := dbTemp.Ping(); err != nil {
 		log.Fatal(err)
