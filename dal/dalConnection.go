@@ -11,30 +11,33 @@ import (
 	"time"
 )
 
-var db sql.DB
+var db *sql.DB
 
 func DbSetup() {
-	go loopCon(&db)
-	connect(&db)
+	go loopCon(db)
+	db = connect()
 	runUpgrades()
 }
 
 func loopCon(d *sql.DB) {
 	for {
 		log.Println("connecting to db via go routine")
-		connect(&db)
+		d = connect()
 		log.Println("waiting 2 minutes to connect again")
 		time.Sleep(time.Minute * 2)
 	}
 }
 
-func connect(d *sql.DB) {
-	dbTemp, err := sql.Open("mysql", "root:Dummy1!SQL@/moneypot")
+func connect() *sql.DB {
+	dbTemp, err := sql.Open("mysql", "root:Dummy1!SQL@tcp(127.0.0.1:1433)/moneypot?timeout=2s")
 	if err != nil {
 		log.Fatal(err)
 	}
-	d = dbTemp
-	d.SetConnMaxLifetime(time.Minute * 3)
+	dbTemp.SetConnMaxLifetime(time.Minute * 3)
+	if err := dbTemp.Ping(); err != nil {
+		log.Fatal(err)
+	}
+	return dbTemp
 }
 
 func runUpgrades() {
@@ -59,8 +62,14 @@ func runUpgrades() {
 						log.Println(err)
 					}
 
+					sqlCmd := string(file)
+
+					if err := db.Ping(); err != nil {
+						log.Fatal(err)
+					}
+
 					log.Printf("running upgrade /%v/%v", dir.Name(), s.Name())
-					stmt, err := db.Prepare(string(file))
+					stmt, err := db.Prepare(sqlCmd)
 					if err != nil {
 						log.Fatal(err)
 					}

@@ -1,1 +1,1 @@
-CREATE DATABASE moneypot;--
+CREATE TABLE IF NOT EXISTS Money (id int, amount varchar(255));--

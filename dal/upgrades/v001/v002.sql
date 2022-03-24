@@ -1,5 +1,1 @@
-CREATE TABLE Money
-(
-    id     int,
-    amount varchar(255),
-);
+CREATE TABLE IF NOT EXISTS VersionTable (id int, Version varchar(255));--
