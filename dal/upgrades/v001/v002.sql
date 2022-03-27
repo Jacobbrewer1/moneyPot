@@ -1,1 +1,0 @@
-CREATE TABLE IF NOT EXISTS VersionTable (id int, Version varchar(255));--
