@@ -27,6 +27,7 @@ func main() {
 
 	r.HandleFunc("/", home)
 
+	http.Handle("/", r)
 	if err := http.ListenAndServe("localhost:8080", nil); err != nil {
 		log.Fatal(err)
 	}
