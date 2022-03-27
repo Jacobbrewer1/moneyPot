@@ -3,9 +3,12 @@ package main
 import (
 	"github.com/Jacobbrewer1/moneypot/dal"
 	"github.com/gorilla/mux"
+	"html/template"
 	"log"
 	"net/http"
 )
+
+var templates *template.Template
 
 func init() {
 	log.Println("initializing logging")
@@ -16,6 +19,7 @@ func init() {
 
 func main() {
 	dal.DbSetup()
+	handleFilePath()
 
 	r := mux.NewRouter()
 
@@ -23,5 +27,7 @@ func main() {
 
 	r.HandleFunc("/", home)
 
-	http.ListenAndServe("localhost:8080", nil)
+	if err := http.ListenAndServe("localhost:8080", nil); err != nil {
+		log.Fatal(err)
+	}
 }
