@@ -81,6 +81,7 @@ func runUpgrades() {
 					if err != nil {
 						log.Fatal(err)
 					}
+					log.Printf("upgrade /%v/%v completed successfully", dir.Name(), s.Name())
 				}
 			}
 		}
