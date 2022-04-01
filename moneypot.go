@@ -53,7 +53,9 @@ func main() {
 	log.Println("listening...")
 
 	r.HandleFunc("/", home)
+	//r.HandleFunc("/depositMoney", depositMoneyHandler).Methods(http.MethodPost)
 
+	http.HandleFunc("/depositMoney", depositMoneyHandler)
 	http.Handle("/", r)
 	ip4, ip6 := getIpAddress()
 	log.Printf("listening at:\nIPV4: %v:8080\nIPV6: %v:8080", ip4, ip6)

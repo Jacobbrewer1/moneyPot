@@ -13,6 +13,11 @@ func handleFilePath() {
 	log.Println("Files parsed successfully")
 }
 
+func depositMoneyHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println(r.URL)
+	log.Println("deposit money request received")
+}
+
 func home(w http.ResponseWriter, r *http.Request) {
 	if err := templates.ExecuteTemplate(w, "index", nil); err != nil {
 		log.Fatal(err)
