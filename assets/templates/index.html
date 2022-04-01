@@ -86,7 +86,7 @@
         }
 
         .modal-body {
-            padding: 2px 16px;
+            padding: 16px 16px;
         }
 
         .modal-footer {
@@ -114,12 +114,17 @@
         </div>
 
         <div class="modal-body">
-            <p>Some text in the Modal Body</p>
-            <p>Some other text...</p>
+            <form>
+                <div class="form-group">
+                    <label for="depositMoneyInput">Deposit Input</label>
+                    <input type="number" class="form-control" id="depositMoneyInput" aria-describedby="Deposit Help" placeholder="Enter amount">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
         </div>
 
         <div class="modal-footer">
-            <h3>Modal Footer</h3>
+            <h3>Note: All actions are logged to Google Sheets</h3>
         </div>
     </div>
 
