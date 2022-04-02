@@ -38,6 +38,30 @@ func depositMoneyHandler(w http.ResponseWriter, r *http.Request) {
 	go dal.DepositMoney(amount)
 }
 
+func withdrawMoneyHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("withdraw money request received")
+	formValue := r.FormValue("withdrawMoneyInput")
+	if formValue == "" {
+		log.Println("withdraw value is nil")
+		http.Error(w, "withdraw value is nil", 0)
+		return
+	}
+	amount, err := strconv.ParseFloat(formValue, 32)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), 1)
+		return
+	}
+	if amount < 0 {
+		log.Println("amount is less than zero")
+		log.Println("invalid amount")
+		http.Error(w, "invalid amount received", 2)
+	}
+	log.Printf("withdraw amount of %v received\n", amount)
+	go dal.WithdrawMoney(amount)
+}
+
+
 func home(w http.ResponseWriter, r *http.Request) {
 	if err := templates.ExecuteTemplate(w, "index", nil); err != nil {
 		log.Fatal(err)
