@@ -19,7 +19,6 @@ func updateAmount(amt float64) error {
 	if err != nil {
 		return err
 	}
-	log.Println(query)
 	return nil
 }
 

@@ -29,6 +29,11 @@ func depositMoneyHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 1)
 		return
 	}
+	if amount < 0 {
+		log.Println("amount is less than zero")
+		log.Println("invalid amount")
+		http.Error(w, "invalid amount received", 2)
+	}
 	log.Printf("deposit amount of %v received\n", amount)
 	dal.DepositMoney(amount)
 }
