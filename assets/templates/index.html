@@ -94,6 +94,12 @@
             background-color: #0BDA51;
             color: white;
         }
+
+        a.bg-primary:hover, a.bg-primary:focus,
+        button.bg-primary:hover,
+        button.bg-primary:focus {
+            background-color: #0BDA51 !important;
+        }
     </style>
 </head>
 <body>
@@ -101,7 +107,7 @@
 <h2>Welcome to Money Pot</h2>
 
 <!-- Trigger/Open The Modal -->
-<button id="depositButton">Deposit Money</button>
+<button id="depositButton" class="bg-primary">Deposit Money</button>
 
 <!-- The Modal -->
 <div id="depositModal" class="modal">

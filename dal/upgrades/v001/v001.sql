@@ -1,1 +1,1 @@
-CREATE TABLE IF NOT EXISTS Money (id int, amount varchar(255));--
+CREATE TABLE IF NOT EXISTS Money (id int, amount decimal(65, 2));--
