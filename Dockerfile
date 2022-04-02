@@ -6,8 +6,8 @@ WORKDIR $home\source\repos\configRoot
 COPY . .
 
 # Download all the dependencies
-RUN go get github.com/Jacobbrewer1/configRoot
+RUN go get github.com/Jacobbrewer1/moneypot
 
-RUN go build -a -v -work -o /configrootexe
+RUN go build -a -v -work -o /moneypotexe
 
-CMD [ "/configrootexe" ]
+CMD [ "/moneypotexe" ]
