@@ -14,8 +14,9 @@ func handleFilePath() {
 }
 
 func depositMoneyHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.URL)
 	log.Println("deposit money request received")
+	amount := r.FormValue("depositMoneyInput")
+	log.Println(amount)
 }
 
 func home(w http.ResponseWriter, r *http.Request) {

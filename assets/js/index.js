@@ -40,6 +40,7 @@ function depositMoneyToDb(evt) {
             success: () => {
                 console.log("Amount deposited");
                 form.reset();
+                depositModal.style.display = "none"
             },
             error: (d) => {
                 console.log("An error occurred. Please try again");
