@@ -44,6 +44,7 @@ function depositMoneyToDb(evt) {
             },
             error: (d) => {
                 console.log("An error occurred. Please try again");
+                console.log(d)
                 form.reset();
             }
         });

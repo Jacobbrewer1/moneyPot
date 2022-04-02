@@ -1,9 +1,11 @@
 package main
 
 import (
+	"github.com/Jacobbrewer1/moneypot/dal"
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func handleFilePath() {
@@ -15,8 +17,20 @@ func handleFilePath() {
 
 func depositMoneyHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("deposit money request received")
-	amount := r.FormValue("depositMoneyInput")
-	log.Println(amount)
+	formValue := r.FormValue("depositMoneyInput")
+	if formValue == "" {
+		log.Println("deposit value is nil")
+		http.Error(w, "deposit value is nil", 0)
+		return
+	}
+	amount, err := strconv.ParseFloat(formValue, 32)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), 1)
+		return
+	}
+	log.Printf("deposit amount of %v received\n", amount)
+	dal.DepositMoney(amount)
 }
 
 func home(w http.ResponseWriter, r *http.Request) {
