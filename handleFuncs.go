@@ -35,7 +35,7 @@ func depositMoneyHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid amount received", 2)
 	}
 	log.Printf("deposit amount of %v received\n", amount)
-	dal.DepositMoney(amount)
+	go dal.DepositMoney(amount)
 }
 
 func home(w http.ResponseWriter, r *http.Request) {
