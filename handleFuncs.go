@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/Jacobbrewer1/moneypot/dal"
 	"html/template"
 	"log"
@@ -61,6 +62,14 @@ func withdrawMoneyHandler(w http.ResponseWriter, r *http.Request) {
 	go dal.WithdrawMoney(amount)
 }
 
+func liveUpdates(w http.ResponseWriter, r *http.Request) {
+	amount, err := dal.ReadAmount()
+	if err != nil {
+		log.Println(err)
+	}
+	log.Printf("updating live amount with %v\n", amount)
+	w.Write([]byte(fmt.Sprintf("£%.2f", amount)))
+}
 
 func home(w http.ResponseWriter, r *http.Request) {
 	if err := templates.ExecuteTemplate(w, "index", nil); err != nil {

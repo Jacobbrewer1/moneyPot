@@ -20,7 +20,7 @@ func updateAmount(amt float64) error {
 	return nil
 }
 
-func readAmount() (float64, error) {
+func ReadAmount() (float64, error) {
 	sql, err := db.Prepare(readSql)
 	if err != nil {
 		return 0, err

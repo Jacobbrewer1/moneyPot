@@ -55,6 +55,7 @@ func main() {
 	r.HandleFunc("/", home)
 	r.HandleFunc("/depositMoney", depositMoneyHandler).Methods(http.MethodPost)
 	r.HandleFunc("/withdrawMoney", withdrawMoneyHandler).Methods(http.MethodPost)
+	r.HandleFunc("/live/updates/amount", liveUpdates).Methods(http.MethodGet)
 
 	http.Handle("/", r)
 	ip4, ip6 := getIpAddress()

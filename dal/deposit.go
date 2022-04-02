@@ -5,7 +5,7 @@ import (
 )
 
 func DepositMoney(depo float64) {
-	currentAmount, err := readAmount()
+	currentAmount, err := ReadAmount()
 	if err != nil {
 		log.Println(err)
 	}
@@ -17,7 +17,7 @@ func DepositMoney(depo float64) {
 }
 
 func WithdrawMoney(amt float64) {
-	currentAmount, err := readAmount()
+	currentAmount, err := ReadAmount()
 	if err != nil {
 		log.Println(err)
 	}

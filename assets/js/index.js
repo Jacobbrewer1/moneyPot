@@ -24,8 +24,8 @@ withdrawBtn.onclick = function () {
 
 // When the user clicks on <span> (x), close the modal
 // iterate through each span element for each modal
-for (var i = 0; i < span.length; i++){
-    span[i].onclick = function(){
+for (var i = 0; i < span.length; i++) {
+    span[i].onclick = function () {
         depositModal.style.display = "none";
         withdrawModal.style.display = "none";
     }
@@ -38,6 +38,27 @@ window.onclick = function (event) {
         withdrawModal.style.display = "none";
     }
 }
+
+$(document).ready(function () {
+    var interval = 500;   //number of mili seconds between each call
+    var refresh = function() {
+        $.ajax({
+            url: "/live/updates/amount",
+            method: 'get',
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function(d) {
+                //document.getElementById("liveAmount").innerHTML = "New text!";
+                document.getElementById("liveAmount").innerHTML = "Amount in pot: " + d;
+                setTimeout(function() {
+                    refresh();
+                }, interval);
+            }
+        });
+    };
+    refresh();
+});
 
 function withdrawMoneyToDb(evt) {
     evt.preventDefault();
