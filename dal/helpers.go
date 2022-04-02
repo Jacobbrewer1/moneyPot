@@ -1,7 +1,5 @@
 package dal
 
-import "log"
-
 const (
 	CurrencyDbIdValue = 0
 	updateSql         = "UPDATE `moneypot`.`Money` SET `amount` = ? WHERE (`id` = ?);"
@@ -15,7 +13,7 @@ func updateAmount(amt float64) error {
 	}
 	defer sql.Close()
 
-	query, err := sql.Query(amt, CurrencyDbIdValue)
+	_, err = sql.Exec(amt, CurrencyDbIdValue)
 	if err != nil {
 		return err
 	}

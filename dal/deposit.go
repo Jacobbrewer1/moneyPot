@@ -2,7 +2,7 @@ package dal
 
 import "log"
 
-func DepositMoney(depo float64)  {
+func DepositMoney(depo float64) {
 	currentAmount, err := readAmount()
 	if err != nil {
 		log.Println(err)
