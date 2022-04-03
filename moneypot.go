@@ -59,8 +59,8 @@ func main() {
 
 	http.Handle("/", r)
 	ip4, ip6 := getIpAddress()
-	log.Printf("listening at:\nIPV4: %v:8080\nIPV6: %v:8080", ip4, ip6)
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	log.Printf("listening at:\nIPV4: %v:8443\nIPV6: %v:8443", ip4, ip6)
+	if err := http.ListenAndServe(":8443", nil); err != nil {
 		log.Fatal(err)
 	}
 }
