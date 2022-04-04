@@ -39,13 +39,15 @@ func depositMoneyHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Printf("deposit amount of %.2f received\n", amount)
 
+	from := r.FormValue("moneyFrom")
+	log.Printf("Money is from %v\n", from)
+
 	go dal.DepositMoney(amount)
 
 	go createLog(controllers.LoggingLine{
-		Date:       time.Time{},
-		Amount:     amount,
-		MoneyFrom:  "In",
-		MoneyGoing: "",
+		Date:          time.Time{},
+		Amount:        amount,
+		MoneyInReason: from,
 	})
 }
 
@@ -69,14 +71,15 @@ func withdrawMoneyHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid amount received", 2)
 	}
 	log.Printf("withdraw amount of %.2f received\n", amount)
+	reason := r.FormValue("withdrawReason")
+	log.Printf("withdrawal reason is %v\n", reason)
 
 	go dal.WithdrawMoney(amount)
 
 	go createLog(controllers.LoggingLine{
-		Date:       time.Time{},
-		Amount:     amount,
-		MoneyFrom:  "",
-		MoneyGoing: "Out",
+		Date:           time.Time{},
+		Amount:         amount,
+		MoneyOutReason: reason,
 	})
 }
 

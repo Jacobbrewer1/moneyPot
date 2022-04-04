@@ -9,9 +9,9 @@ type (
 	sheetService sheets.Service
 
 	LoggingLine struct {
-		Date       time.Time
-		Amount     float64
-		MoneyFrom  string
-		MoneyGoing string
+		Date           time.Time
+		Amount         float64
+		MoneyInReason  string
+		MoneyOutReason string
 	}
 )

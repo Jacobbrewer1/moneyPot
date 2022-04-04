@@ -64,16 +64,16 @@ func (s *sheetService) PostSheetData(l LoggingLine) {
 	if l.Date.IsZero() {
 		l.Date = time.Now().UTC()
 	}
-	if l.MoneyGoing == "" {
-		l.MoneyGoing = "N/a"
+	if l.MoneyOutReason == "" {
+		l.MoneyOutReason = "N/a"
 	}
-	if l.MoneyFrom == "" {
-		l.MoneyFrom = "N/a"
+	if l.MoneyInReason == "" {
+		l.MoneyInReason = "N/a"
 		l.Amount = 0 - l.Amount
 	}
 
 	var d = sheets.ValueRange{
-		Values: [][]interface{}{{l.Date.Format(time.RFC1123), l.Amount, l.MoneyFrom, l.MoneyGoing}},
+		Values: [][]interface{}{{l.Date.Format(time.RFC1123), l.Amount, l.MoneyInReason, l.MoneyOutReason}},
 	}
 
 	_, err := s.Spreadsheets.Values.Append(*config.JsonConfigVar.RemoteConfig.SheetId, helper.SheetsRange, &d).ValueInputOption("USER_ENTERED").Do()
