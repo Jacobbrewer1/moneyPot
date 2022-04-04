@@ -12,6 +12,7 @@ type (
 
 	RemoteConfigStruct struct {
 		Secrets *ApiSecrets `json:"Secrets,omitempty"`
+		SheetId *string     `json:"SheetId,omitempty"`
 	}
 
 	ApiSecrets struct {
