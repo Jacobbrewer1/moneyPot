@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "ConfigIpAddress": "localhost:8080"
+  }
+}

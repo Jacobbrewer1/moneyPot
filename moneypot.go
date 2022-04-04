@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/Jacobbrewer1/moneypot/config"
 	"github.com/Jacobbrewer1/moneypot/dal"
 	"github.com/gorilla/mux"
 	"html/template"
@@ -45,6 +46,7 @@ func getIpAddress() (string, string) {
 }
 
 func main() {
+	config.ReadConfig()
 	dal.DbSetup()
 	handleFilePath()
 
