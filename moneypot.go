@@ -60,6 +60,7 @@ func main() {
 	r.HandleFunc("/live/updates/amount", liveUpdates).Methods(http.MethodGet)
 
 	http.Handle("/", r)
+
 	ip4, ip6 := getIpAddress()
 	log.Printf("listening at:\nIPV4: %v:8443\nIPV6: %v:8443", ip4, ip6)
 	if err := http.ListenAndServe(":8443", nil); err != nil {

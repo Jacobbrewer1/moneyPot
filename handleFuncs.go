@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
+	"github.com/Jacobbrewer1/moneypot/controllers"
 	"github.com/Jacobbrewer1/moneypot/dal"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func handleFilePath() {
@@ -35,8 +37,16 @@ func depositMoneyHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("invalid amount")
 		http.Error(w, "invalid amount received", 2)
 	}
-	log.Printf("deposit amount of %v received\n", amount)
+	log.Printf("deposit amount of %.2f received\n", amount)
+
 	go dal.DepositMoney(amount)
+
+	go createLog(controllers.LoggingLine{
+		Date:       time.Time{},
+		Amount:     amount,
+		MoneyFrom:  "In",
+		MoneyGoing: "",
+	})
 }
 
 func withdrawMoneyHandler(w http.ResponseWriter, r *http.Request) {
@@ -58,8 +68,21 @@ func withdrawMoneyHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("invalid amount")
 		http.Error(w, "invalid amount received", 2)
 	}
-	log.Printf("withdraw amount of %v received\n", amount)
+	log.Printf("withdraw amount of %.2f received\n", amount)
+
 	go dal.WithdrawMoney(amount)
+
+	go createLog(controllers.LoggingLine{
+		Date:       time.Time{},
+		Amount:     amount,
+		MoneyFrom:  "",
+		MoneyGoing: "Out",
+	})
+}
+
+func createLog(line controllers.LoggingLine) {
+	client := controllers.SheetsSetup()
+	client.PostSheetData(line)
 }
 
 func liveUpdates(w http.ResponseWriter, r *http.Request) {
@@ -67,7 +90,7 @@ func liveUpdates(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
-	log.Printf("updating live amount with %v\n", amount)
+	//log.Printf("updating live amount with %v\n", amount)
 	w.Write([]byte(fmt.Sprintf("£%.2f", amount)))
 }
 
