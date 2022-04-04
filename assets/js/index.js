@@ -65,6 +65,12 @@ function withdrawMoneyToDb(evt) {
     let form = evt.target;
     let formData = new FormData(form);
     let amount = formData.get("withdrawMoneyInput");
+    let r = formData.get("withdrawReason");
+    if (r == null || r == "") {
+        console.log("reason is empty");
+        window.alert("Withdraw reason is empty");
+        return
+    }
     console.log("amount received: " + amount)
     if (amount != null && amount != "") {
         $.ajax({
@@ -93,6 +99,7 @@ function depositMoneyToDb(evt) {
     let form = evt.target;
     let formData = new FormData(form);
     let amount = formData.get("depositMoneyInput");
+    let r = formData.get("depositMoneyInput");
     console.log("amount received: " + amount)
     if (amount != null && amount != "") {
         $.ajax({
