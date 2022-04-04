@@ -1,6 +1,6 @@
 {{ define "index" }}
 <html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"
-      xmlns="http://www.w3.org/1999/html">
+      xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -155,6 +155,17 @@
                            class="form-control" id="withdrawMoneyInput" aria-describedby="Withdraw Help"
                            placeholder="Enter amount" name="withdrawMoneyInput">
                 </div>
+
+                <br>
+
+                <div class="form-group">
+                    <label for="withdrawReason">Withdraw Input</label>
+                    <input type="text" maxlength="15" minlength="2" placeholder="Enter Withdrawal Reason"
+                    name="withdrawReason" id="withdrawReason">
+                </div>
+
+                </br>
+
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>
@@ -184,6 +195,20 @@
                            class="form-control" id="depositMoneyInput" aria-describedby="Deposit Help"
                            placeholder="Enter amount" name="depositMoneyInput">
                 </div>
+
+                <br>
+
+                <div class="form-group">
+                    <label for="moneyFrom">Deposit Input</label>
+                    <select name="moneyFrom" id="moneyFrom">
+                        <option value="badminton">badminton</option>
+                        <option value="sale">sale</option>
+                        <option value="other">other</option>
+                    </select>
+                </div>
+
+                </br>
+
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>

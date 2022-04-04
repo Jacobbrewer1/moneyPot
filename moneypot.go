@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/Jacobbrewer1/moneypot/config"
 	"github.com/Jacobbrewer1/moneypot/dal"
 	"github.com/gorilla/mux"
 	"html/template"
@@ -45,6 +46,7 @@ func getIpAddress() (string, string) {
 }
 
 func main() {
+	config.ReadConfig()
 	dal.DbSetup()
 	handleFilePath()
 
@@ -58,9 +60,10 @@ func main() {
 	r.HandleFunc("/live/updates/amount", liveUpdates).Methods(http.MethodGet)
 
 	http.Handle("/", r)
+
 	ip4, ip6 := getIpAddress()
-	log.Printf("listening at:\nIPV4: %v:8080\nIPV6: %v:8080", ip4, ip6)
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	log.Printf("listening at:\nIPV4: %v:8443\nIPV6: %v:8443", ip4, ip6)
+	if err := http.ListenAndServe(":8443", nil); err != nil {
 		log.Fatal(err)
 	}
 }
