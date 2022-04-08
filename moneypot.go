@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"github.com/Jacobbrewer1/moneypot/config"
 	"github.com/Jacobbrewer1/moneypot/dal"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/websocket"
 	"html/template"
 	"log"
 	"net"
@@ -12,6 +14,18 @@ import (
 )
 
 var templates *template.Template
+
+var ws = websocket.Upgrader{
+	HandshakeTimeout:  0,
+	ReadBufferSize:    1024,
+	WriteBufferSize:   1024,
+	WriteBufferPool:   nil,
+	Subprotocols:      nil,
+	Error:             nil,
+	CheckOrigin:       nil,
+	EnableCompression: false,
+}
+var websocketConnection *websocket.Conn
 
 func init() {
 	log.Println("initializing logging")
@@ -45,6 +59,48 @@ func getIpAddress() (string, string) {
 	return i4, i6
 }
 
+func wsEndpoint(w http.ResponseWriter, r *http.Request) {
+	ws.CheckOrigin = func(r *http.Request) bool { return true }
+
+	// upgrade this connection to a WebSocket
+	// connection
+	sock, err := ws.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println(err)
+	}
+	websocketConnection = sock
+
+	log.Println("websocket created")
+
+	reader(sock)
+}
+
+// define a reader which will listen for
+// new messages being sent to our WebSocket
+// endpoint
+func reader(conn *websocket.Conn) {
+	for {
+		// read in a message
+		messageType, p, err := conn.ReadMessage()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		// print out that message for clarity
+		log.Printf("client message:\ntype: %v\nlog: %v\n", messageType, string(p))
+
+		amt, err := dal.ReadAmount()
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		if err := conn.WriteMessage(messageType, []byte(fmt.Sprintf("£%.2f", amt))); err != nil {
+			log.Println(err)
+			return
+		}
+	}
+}
+
 func main() {
 	config.ReadConfig()
 	dal.DbSetup()
@@ -55,9 +111,9 @@ func main() {
 	log.Println("listening...")
 
 	r.HandleFunc("/", home)
+	r.HandleFunc("/ws", wsEndpoint) // Web socket endpoint
 	r.HandleFunc("/depositMoney", depositMoneyHandler).Methods(http.MethodPost)
 	r.HandleFunc("/withdrawMoney", withdrawMoneyHandler).Methods(http.MethodPost)
-	r.HandleFunc("/live/updates/amount", liveUpdates).Methods(http.MethodGet)
 
 	http.Handle("/", r)
 

@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"github.com/Jacobbrewer1/moneypot/controllers"
 	"github.com/Jacobbrewer1/moneypot/dal"
+	"github.com/gorilla/websocket"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
+	"sync"
 	"time"
 )
 
@@ -42,13 +44,18 @@ func depositMoneyHandler(w http.ResponseWriter, r *http.Request) {
 	from := r.FormValue("moneyFrom")
 	log.Printf("Money is from %v\n", from)
 
-	go dal.DepositMoney(amount)
+	var waiter sync.WaitGroup
+	waiter.Add(1)
+	go dal.DepositMoney(amount, &waiter)
 
 	go createLog(controllers.LoggingLine{
 		Date:          time.Time{},
 		Amount:        amount,
 		MoneyInReason: from,
 	})
+
+	waiter.Wait()
+	go pushAmount(websocketConnection)
 }
 
 func withdrawMoneyHandler(w http.ResponseWriter, r *http.Request) {
@@ -74,13 +81,18 @@ func withdrawMoneyHandler(w http.ResponseWriter, r *http.Request) {
 	reason := r.FormValue("withdrawReason")
 	log.Printf("withdrawal reason is %v\n", reason)
 
-	go dal.WithdrawMoney(amount)
+	var waiter sync.WaitGroup
+	waiter.Add(1)
+	go dal.WithdrawMoney(amount, &waiter)
 
 	go createLog(controllers.LoggingLine{
 		Date:           time.Time{},
 		Amount:         amount,
 		MoneyOutReason: reason,
 	})
+
+	waiter.Wait()
+	go pushAmount(websocketConnection)
 }
 
 func createLog(line controllers.LoggingLine) {
@@ -88,16 +100,28 @@ func createLog(line controllers.LoggingLine) {
 	client.PostSheetData(line)
 }
 
-func liveUpdates(w http.ResponseWriter, r *http.Request) {
+func pushAmount(conn *websocket.Conn) {
+	if conn == nil {
+		log.Println("websocket connection dead")
+		return
+	}
+
 	amount, err := dal.ReadAmount()
 	if err != nil {
 		log.Println(err)
 	}
-	//log.Printf("updating live amount with %v\n", amount)
-	w.Write([]byte(fmt.Sprintf("£%.2f", amount)))
+	log.Printf("updating live amount with %v\n", amount)
+	if err := conn.WriteMessage(1, []byte(fmt.Sprintf("£%.2f", amount))); err != nil {
+		if websocket.IsCloseError(err) {
+			log.Println("websocket connection dead")
+		} else {
+			log.Fatalln(err)
+		}
+	}
 }
 
 func home(w http.ResponseWriter, r *http.Request) {
+	log.Println("home page request received")
 	if err := templates.ExecuteTemplate(w, "index", nil); err != nil {
 		log.Fatal(err)
 	}
