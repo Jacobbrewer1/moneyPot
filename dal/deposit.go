@@ -2,9 +2,14 @@ package dal
 
 import (
 	"log"
+	"sync"
 )
 
-func DepositMoney(depo float64) {
+func DepositMoney(depo float64, w ...*sync.WaitGroup) {
+	if w != nil {
+		defer w[0].Done()
+	}
+
 	currentAmount, err := ReadAmount()
 	if err != nil {
 		log.Println(err)
@@ -16,7 +21,11 @@ func DepositMoney(depo float64) {
 	log.Printf("new value = %v\n", depo+currentAmount)
 }
 
-func WithdrawMoney(amt float64) {
+func WithdrawMoney(amt float64, w ...*sync.WaitGroup) {
+	if w != nil {
+		defer w[0].Done()
+	}
+
 	currentAmount, err := ReadAmount()
 	if err != nil {
 		log.Println(err)

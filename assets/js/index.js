@@ -13,6 +13,29 @@ var withdrawBtn = document.getElementById("withdrawButton");
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close");
 
+let socket = new WebSocket("ws://127.0.0.1:8443/ws");
+console.log("Attempting Connection...");
+
+socket.onopen = () => {
+    console.log("Successfully Connected");
+    socket.send("client : successful connection established")
+};
+
+socket.onclose = event => {
+    console.log("Socket Closed Connection: ", event);
+    socket.send("client : connection closed")
+};
+
+socket.onerror = error => {
+    console.log("client : websocket error: ", error);
+};
+
+socket.onmessage = event => {
+    console.log("client : event received: ", event)
+    console.log("client : message event: ", event.data)
+    document.getElementById("liveAmount").innerHTML = "Amount in pot: " + event.data;
+}
+
 // When the user clicks the button, open the modal
 depositBtn.onclick = function () {
     depositModal.style.display = "block";
@@ -38,27 +61,6 @@ window.onclick = function (event) {
         withdrawModal.style.display = "none";
     }
 }
-
-$(document).ready(function () {
-    var interval = 500;   //number of mili seconds between each call
-    var refresh = function() {
-        $.ajax({
-            url: "/live/updates/amount",
-            method: 'get',
-            processData: false,
-            contentType: false,
-            cache: false,
-            success: function(d) {
-                //document.getElementById("liveAmount").innerHTML = "New text!";
-                document.getElementById("liveAmount").innerHTML = "Amount in pot: " + d;
-                setTimeout(function() {
-                    refresh();
-                }, interval);
-            }
-        });
-    };
-    refresh();
-});
 
 function withdrawMoneyToDb(evt) {
     evt.preventDefault();
