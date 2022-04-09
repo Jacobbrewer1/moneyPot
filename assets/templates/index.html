@@ -119,13 +119,38 @@
         button.bg-secondary:focus {
             background-color: #FF0000 !important;
         }
+
+        .box {
+            float: left;
+            height: 20px;
+            width: 170px;
+            margin-bottom: 15px;
+            border: 1px solid black;
+            clear: both;
+        }
+
+        .red {
+            background-color: #FF0000;
+        }
+
+        .green {
+            background-color: #0BDA51;
+        }
     </style>
 </head>
 <body>
 
 <h2 style="text-align: center">Welcome to Money Pot</h2>
-<h2 style="float: right" id="liveAmount">Live Amount</h2>
 
+<div style="float: right;">
+    <h2 id="liveAmount">Live Amount Not Connected</h2>
+
+    <div>
+        <h3 style="position: absolute; right: 0">Connection Status</h3>
+        <br>
+        <br>
+        <div class="box red" id="connectionStatusBox" style="position: absolute; right: 0"></div></div>
+</div>
 
 <!-- Trigger/Open Deposit Modal -->
 <button id="depositButton" class="bg-primary">Deposit Money</button>

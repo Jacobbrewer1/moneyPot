@@ -13,26 +13,33 @@ var withdrawBtn = document.getElementById("withdrawButton");
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close");
 
-let socket = new WebSocket("ws://127.0.0.1:8443/ws");
+var connectionStatusDisplay = document.getElementById("connectionStatusBox");
+
 console.log("Attempting Connection...");
+let socket = new WebSocket("ws://127.0.0.1:8443/ws");
 
 socket.onopen = () => {
     console.log("Successfully Connected");
-    socket.send("client : successful connection established")
+    socket.send("client : successful connection established");
+    connectionStatusDisplay.className = "box green";
 };
 
 socket.onclose = event => {
     console.log("Socket Closed Connection: ", event);
-    socket.send("client : connection closed")
+    connectionStatusDisplay.className = "box red";
+    document.getElementById("liveAmount").innerHTML = "Live Amount Service Down";
 };
 
 socket.onerror = error => {
     console.log("client : websocket error: ", error);
+    connectionStatusDisplay.className = "box red";
+    document.getElementById("liveAmount").innerHTML = "Live Amounts Down";
+
 };
 
 socket.onmessage = event => {
-    console.log("client : event received: ", event)
-    console.log("client : message event: ", event.data)
+    console.log("client : event received: ", event);
+    console.log("client : message event: ", event.data);
     document.getElementById("liveAmount").innerHTML = "Amount in pot: " + event.data;
 }
 
