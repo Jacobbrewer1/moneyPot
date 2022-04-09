@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -33,8 +34,9 @@ func ReadConfig() error {
 		if err != nil {
 			return err
 		}
+		return nil
 	}
-	return nil
+	return errors.New("no config file detected")
 }
 
 func findFile(path string) (string, bool) {
@@ -93,4 +95,3 @@ func requestConfig() (json.RawMessage, error) {
 	}
 	return body, nil
 }
-

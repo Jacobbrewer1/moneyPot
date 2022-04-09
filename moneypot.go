@@ -102,8 +102,13 @@ func reader(conn *websocket.Conn) {
 }
 
 func main() {
-	config.ReadConfig()
+	if err := config.ReadConfig(); err != nil {
+		log.Fatalln(err)
+	}
+
 	dal.DbSetup()
+	go dal.SyncLoop()
+
 	handleFilePath()
 
 	r := mux.NewRouter()

@@ -9,6 +9,8 @@ import (
 	"google.golang.org/api/sheets/v4"
 	"log"
 	"os"
+	"strconv"
+	"strings"
 	"text/tabwriter"
 	"time"
 )
@@ -47,7 +49,7 @@ func (s *sheetService) GetSheetData() {
 		fmt.Println("No data found.")
 	} else {
 		log.Println("Spreadsheet is now:")
-		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
+		w := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', tabwriter.AlignRight)
 		for _, row := range resp.Values {
 			var rowText string
 			for _, column := range row {
@@ -82,4 +84,16 @@ func (s *sheetService) PostSheetData(l LoggingLine) {
 	}
 
 	go s.GetSheetData()
+}
+
+func (s sheetService) GetTotal() (float64, error) {
+	// Pull the data from the sheet
+	resp, err := s.Spreadsheets.Values.Get(*config.JsonConfigVar.RemoteConfig.SheetId, helper.SheetsTotal).Do()
+	if err != nil {
+		log.Fatalf("Unable to retrieve data from sheet: %v", err)
+	}
+	if len(resp.Values) == 0 {
+		return 0, nil
+	}
+	return strconv.ParseFloat(strings.TrimSpace(strings.TrimPrefix(strings.TrimSpace(fmt.Sprintf("%v", resp.Values[0][0])), "£")), 64)
 }
