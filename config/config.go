@@ -25,7 +25,8 @@ func ReadConfig() error {
 		}
 
 		log.Println(string(c))
-		err = json.Unmarshal(c, &JsonConfigVar)
+		JsonConfigVar = new(StructConfig)
+		err = json.Unmarshal(c, &JsonConfigVar.LocalConfig)
 		if err != nil {
 			return err
 		}
@@ -84,7 +85,7 @@ func decodeGotConfig(rawJson json.RawMessage) (*RemoteConfigStruct, error) {
 }
 
 func requestConfig() (json.RawMessage, error) {
-	resp, err := http.Get(fmt.Sprintf("http://%v/MoneyPot", *JsonConfigVar.ConnectionStrings.ConfigIpAddress))
+	resp, err := http.Get(fmt.Sprintf("http://%v/MoneyPot", *JsonConfigVar.LocalConfig.ConnectionStrings.ConfigIpAddress))
 	if err != nil {
 		return nil, err
 	}

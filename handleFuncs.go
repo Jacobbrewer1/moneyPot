@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/Jacobbrewer1/moneypot/config"
 	"github.com/Jacobbrewer1/moneypot/controllers"
 	"github.com/Jacobbrewer1/moneypot/dal"
 	"github.com/gorilla/websocket"
@@ -45,8 +46,10 @@ func depositMoneyHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Money is from %v\n", from)
 
 	var waiter sync.WaitGroup
-	waiter.Add(1)
-	go dal.DepositMoney(amount, &waiter)
+	if config.JsonConfigVar.UseDB() {
+		waiter.Add(1)
+		go dal.DepositMoney(amount, &waiter)
+	}
 
 	go createLog(controllers.LoggingLine{
 		Date:          time.Time{},
@@ -82,8 +85,10 @@ func withdrawMoneyHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("withdrawal reason is %v\n", reason)
 
 	var waiter sync.WaitGroup
-	waiter.Add(1)
-	go dal.WithdrawMoney(amount, &waiter)
+	if config.JsonConfigVar.UseDB() {
+		waiter.Add(1)
+		go dal.WithdrawMoney(amount, &waiter)
+	}
 
 	go createLog(controllers.LoggingLine{
 		Date:           time.Time{},

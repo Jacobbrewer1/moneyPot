@@ -2,17 +2,23 @@ package config
 
 type (
 	StructConfig struct {
-		RemoteConfig      *RemoteConfigStruct
-		ConnectionStrings *ConnectionStringsStruct `json:"ConnectionStrings,omitempty"`
+		RemoteConfig *RemoteConfigStruct
+		LocalConfig  *LocalConfigStruct
 	}
 
-	ConnectionStringsStruct struct {
+	LocalConfigStruct struct {
+		ConnectionStrings *Endpoints `json:"ConnectionStrings,omitempty"`
+		UseDatabase       *bool      `json:"UseDatabase,omitempty"`
+	}
+
+	Endpoints struct {
 		ConfigIpAddress *string `json:"ConfigIpAddress,omitempty"`
 	}
 
 	RemoteConfigStruct struct {
-		Secrets *ApiSecrets `json:"Secrets,omitempty"`
-		SheetId *string     `json:"SheetId,omitempty"`
+		Secrets          *ApiSecrets `json:"Secrets,omitempty"`
+		SheetId          *string     `json:"SheetId,omitempty"`
+		ConnectionString *string     `json:"ConnectionString"`
 	}
 
 	ApiSecrets struct {
@@ -32,3 +38,7 @@ type (
 		ClientX509CertUrl       *string `json:"client_x509_cert_url,omitempty"`
 	}
 )
+
+func (c StructConfig) UseDB() bool {
+	return *c.LocalConfig.UseDatabase
+}

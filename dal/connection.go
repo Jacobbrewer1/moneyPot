@@ -3,6 +3,7 @@ package dal
 import (
 	"database/sql"
 	"fmt"
+	"github.com/Jacobbrewer1/moneypot/config"
 	_ "github.com/go-sql-driver/mysql"
 	"io/ioutil"
 	"log"
@@ -11,45 +12,32 @@ import (
 	"time"
 )
 
-var (
-	db *sql.DB
-)
-
-func DbSetup() {
-	go loopCon(db)
-	db = connect()
-	runUpgrades()
-}
-
-func loopCon(d *sql.DB) {
-	for {
-		log.Println("connecting to db via go routine")
-		d = connect()
-		log.Println("waiting 2 minutes to connect again")
-		time.Sleep(time.Minute * 2)
-	}
-}
-
+// When calling this method, use the next line for defer db.close()
 func connect() *sql.DB {
-	dbTemp, err := sql.Open("mysql", "root:Dummy1!SQL@tcp(127.0.0.1:1433)/moneypot?timeout=2s")
+	db, err := sql.Open("mysql", *config.JsonConfigVar.RemoteConfig.ConnectionString)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	dbTemp.SetConnMaxLifetime(time.Minute * 3)
-	if err := dbTemp.Ping(); err != nil {
+	db.SetConnMaxLifetime(time.Minute * 3)
+	if err := db.Ping(); err != nil {
 		log.Fatal(err)
 	}
-	return dbTemp
+	return db
 }
 
-func runUpgrades() {
+func Upgrade() {
 	if findFile("./dal/upgrades") {
 		log.Println("upgrades detected")
 		items, err := ioutil.ReadDir("./dal/upgrades/")
 		if err != nil {
 			log.Println(err)
 		}
+
+		log.Println("connected to db")
+		db := connect()
+		defer db.Close()
+		log.Println("db connected")
 
 		for _, dir := range items {
 			if dir.IsDir() {
@@ -85,7 +73,11 @@ func runUpgrades() {
 				}
 			}
 		}
+		log.Println("all upgrades completed")
+		return
 	}
+	log.Println("no upgrades were detected")
+	return
 }
 
 func findFile(path string) bool {

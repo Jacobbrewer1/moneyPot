@@ -1,5 +1,6 @@
 {
   "ConnectionStrings": {
     "ConfigIpAddress": "localhost:8080"
-  }
+  },
+  "UseDatabase": false
 }

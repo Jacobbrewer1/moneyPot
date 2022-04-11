@@ -106,8 +106,10 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	dal.DbSetup()
-	go dal.SyncLoop()
+	if *config.JsonConfigVar.LocalConfig.UseDatabase {
+		go dal.SyncLoop()
+		dal.Upgrade()
+	}
 
 	handleFilePath()
 
